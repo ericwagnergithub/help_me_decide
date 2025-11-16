@@ -1,0 +1,245 @@
+:root {
+  color-scheme: light dark;
+}
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 12px;
+  background: #f3f4f6;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.2s ease;
+}
+body.landing-active {
+  height: 100vh;
+  overflow: hidden;
+}
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+  text-align: center;
+}
+.subtitle {
+  text-align: center;
+  font-size: 0.88rem;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 10px;
+  font-size: 0.98rem;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  box-sizing: border-box;
+}
+textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb33;
+}
+.button-row {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+button {
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.98rem;
+  flex-shrink: 0;
+}
+button.primary {
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+}
+button.secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #374151;
+  margin-top: 12px;
+}
+.progress-bar-wrapper {
+  margin-top: 4px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  height: 8px;
+}
+.progress-bar {
+  height: 8px;
+  width: 0;
+  background: #22c55e;
+  transition: width 0.2s ease;
+}
+.pair-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.choice-card {
+  flex: 1 1 220px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.option-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+  word-wrap: break-word;
+  margin-bottom: 10px;
+}
+.choice-card button {
+  width: 100%;
+  margin-top: 4px;
+  padding: 12px;
+  font-size: 1rem;
+}
+.tip {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 8px;
+}
+.ranking {
+  margin-top: 18px;
+}
+.ranking h3 {
+  font-size: 1rem;
+  margin: 0 0 4px;
+}
+.ranking table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.ranking th,
+.ranking td {
+  padding: 6px 4px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+.ranking th {
+  font-weight: 600;
+  color: #4b5563;
+}
+.empty-state {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* Landing page */
+#landingSection {
+  min-height: calc(100vh - 24px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+.landing-header {
+  text-align: center;
+  margin-bottom: 4px;
+}
+.landing-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.landing-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.landing-card {
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  background: #f9fafb;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
+}
+.landing-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  border-color: #2563eb44;
+}
+.landing-card-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+.landing-card-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+.landing-card-cta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+.landing-footer {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 8px;
+  }
+  .app {
+    padding: 12px;
+    border-radius: 10px;
+  }
+  .pair-container {
+    flex-direction: column;
+  }
+  #landingSection {
+    min-height: calc(100vh - 16px);
+  }
+}
