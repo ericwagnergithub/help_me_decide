@@ -14,6 +14,11 @@
       padding: 12px;
       background: #f3f4f6;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.2s ease;
+    }
+    body.landing-active {
+      height: 100vh;
+      overflow: hidden;
     }
     .app {
       max-width: 900px;
@@ -164,6 +169,71 @@
       color: #6b7280;
       margin-top: 6px;
     }
+
+    /* Landing page */
+    #landingSection {
+      min-height: calc(100vh - 24px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+    .landing-header {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .landing-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .landing-subtitle {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+    .landing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .landing-card {
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 14px;
+      background: #f9fafb;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
+    }
+    .landing-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+      border-color: #2563eb44;
+    }
+    .landing-card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+    .landing-card-desc {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    .landing-card-cta {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #2563eb;
+    }
+    .landing-footer {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #9ca3af;
+    }
+
     @media (max-width: 640px) {
       body {
         padding: 8px;
@@ -175,71 +245,195 @@
       .pair-container {
         flex-direction: column;
       }
+      #landingSection {
+        min-height: calc(100vh - 16px);
+      }
     }
   </style>
 </head>
-<body>
+<body class="landing-active">
   <div class="app">
-    <h1>Help Me Decide</h1>
-    <div class="subtitle">
-      Compare two at a time to rank restaurants, movies, trips, or anything else.
-    </div>
-
-    <div>
-      <div class="label">Options (one per line)</div>
-      <textarea id="listInput" placeholder="Example:
-Pizza Palace
-Sushi World
-Burger Town
-Taco Fiesta
-Indian Delight"></textarea>
-
-      <div class="button-row">
-        <button class="primary" onclick="startComparison()">Start comparing</button>
-        <button class="secondary" onclick="loadExample()">Load example list</button>
-        <button class="secondary" onclick="clearAll()">Clear</button>
-      </div>
-    </div>
-
-    <div id="comparisonSection" style="display:none;">
-      <div class="status-row">
-        <div><strong id="itemsCountLabel"></strong></div>
-        <div id="progressLabel"></div>
-      </div>
-      <div class="progress-bar-wrapper">
-        <div class="progress-bar" id="progressBar"></div>
-      </div>
-
-      <div class="pair-container">
-        <div class="choice-card">
-          <div class="label">Option A</div>
-          <div class="option-name" id="optionAName"></div>
-          <button class="primary" id="optionAButton" onclick="choose('A')">Pick A</button>
-        </div>
-        <div class="choice-card">
-          <div class="label">Option B</div>
-          <div class="option-name" id="optionBName"></div>
-          <button class="primary" id="optionBButton" onclick="choose('B')">Pick B</button>
+    <!-- Landing / First Page -->
+    <section id="landingSection">
+      <div class="landing-header">
+        <div class="landing-title">Help Me Decide</div>
+        <div class="landing-subtitle">
+          Compare two at a time to quickly rank your favorites. What are you deciding today?
         </div>
       </div>
 
-      <div class="tip">
-        Tip: Don’t overthink it—just tap your gut choice. The list will sort itself out.
-      </div>
+      <div class="landing-grid">
+        <div class="landing-card" onclick="startPreset('restaurants')">
+          <div>
+            <div class="landing-card-title">Restaurant types</div>
+            <div class="landing-card-desc">
+              Can’t pick what to eat tonight? Let’s rank cuisines first.
+            </div>
+          </div>
+          <div class="landing-card-cta">Use preloaded cuisines →</div>
+        </div>
 
-      <div class="ranking">
-        <h3>Live ranking</h3>
-        <div id="rankingContainer" class="empty-state">
-          Start comparing to see the ranked list.
+        <div class="landing-card" onclick="startPreset('babyNames')">
+          <div>
+            <div class="landing-card-title">Baby names</div>
+            <div class="landing-card-desc">
+              Narrow down your name list with quick A vs B choices.
+            </div>
+          </div>
+          <div class="landing-card-cta">Use preloaded names →</div>
+        </div>
+
+        <div class="landing-card" onclick="startPreset('movies')">
+          <div>
+            <div class="landing-card-title">Movies to watch</div>
+            <div class="landing-card-desc">
+              Build a watchlist by ranking popular movies.
+            </div>
+          </div>
+          <div class="landing-card-cta">Use preloaded movies →</div>
+        </div>
+
+        <div class="landing-card" onclick="startPreset('travel')">
+          <div>
+            <div class="landing-card-title">Travel destinations</div>
+            <div class="landing-card-desc">
+              Decide where to go next from classic destinations.
+            </div>
+          </div>
+          <div class="landing-card-cta">Use preloaded trips →</div>
         </div>
       </div>
-    </div>
+
+      <div class="landing-footer">
+        You can edit the list or paste your own after you pick a category.
+      </div>
+    </section>
+
+    <!-- Main App Section (textarea + comparison) -->
+    <section id="mainSection" style="display:none;">
+      <h1>Help Me Decide</h1>
+      <div class="subtitle">
+        Compare two at a time to rank restaurants, movies, trips, or anything else.
+      </div>
+
+      <div>
+        <div class="label">Options (one per line)</div>
+        <textarea id="listInput" placeholder="Type or paste your own list here..."></textarea>
+
+        <div class="button-row">
+          <button class="primary" onclick="startComparison()">Start comparing</button>
+          <button class="secondary" onclick="loadExample()">Load generic example</button>
+          <button class="secondary" onclick="clearAll()">Clear</button>
+        </div>
+      </div>
+
+      <div id="comparisonSection" style="display:none;">
+        <div class="status-row">
+          <div><strong id="itemsCountLabel"></strong></div>
+          <div id="progressLabel"></div>
+        </div>
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="pair-container">
+          <div class="choice-card">
+            <div class="label">Option A</div>
+            <div class="option-name" id="optionAName"></div>
+            <button class="primary" id="optionAButton" onclick="choose('A')">Pick A</button>
+          </div>
+          <div class="choice-card">
+            <div class="label">Option B</div>
+            <div class="option-name" id="optionBName"></div>
+            <button class="primary" id="optionBButton" onclick="choose('B')">Pick B</button>
+          </div>
+        </div>
+
+        <div class="tip">
+          Tip: Don’t overthink it—just tap your gut choice. The list will sort itself out.
+        </div>
+
+        <div class="ranking">
+          <h3>Live ranking</h3>
+          <div id="rankingContainer" class="empty-state">
+            Start comparing to see the ranked list.
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
     let items = [];   // { id, name, wins }
     let pairs = [];   // [i, j]
     let pairIndex = 0;
+
+    const presets = {
+      restaurants: [
+        "Italian",
+        "Sushi",
+        "Mexican",
+        "Thai",
+        "Indian",
+        "Burgers",
+        "Pizza",
+        "Mediterranean",
+        "BBQ",
+        "Vegan / Vegetarian"
+      ],
+      babyNames: [
+        "Olivia",
+        "Liam",
+        "Emma",
+        "Noah",
+        "Ava",
+        "Oliver",
+        "Sophia",
+        "Elijah",
+        "Amelia",
+        "Mateo"
+      ],
+      movies: [
+        "Inception",
+        "The Dark Knight",
+        "Everything Everywhere All at Once",
+        "Parasite",
+        "Spider-Man: Into the Spider-Verse",
+        "The Godfather",
+        "Interstellar",
+        "Knives Out",
+        "Mad Max: Fury Road",
+        "Get Out"
+      ],
+      travel: [
+        "Tokyo",
+        "Paris",
+        "New York City",
+        "Rome",
+        "London",
+        "Reykjavík (Iceland)",
+        "Kyoto",
+        "Amsterdam",
+        "Barcelona",
+        "Vancouver"
+      ]
+    };
+
+    function goToMain() {
+      document.getElementById("landingSection").style.display = "none";
+      document.getElementById("mainSection").style.display = "block";
+      document.body.classList.remove("landing-active");
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+
+    function startPreset(key) {
+      const preset = presets[key];
+      if (!preset) return;
+      const input = document.getElementById("listInput");
+      input.value = preset.join("\n");
+      goToMain();
+      startComparison();
+    }
 
     function loadExample() {
       const example = [
@@ -250,7 +444,7 @@ Indian Delight"></textarea>
         "Indian Delight",
         "Ramen House",
         "BBQ Shack"
-      ].join("\\n");
+      ].join("\n");
       document.getElementById("listInput").value = example;
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -267,7 +461,7 @@ Indian Delight"></textarea>
       const rawLines = document
         .getElementById("listInput")
         .value
-        .split("\\n")
+        .split("\n")
         .map(s => s.trim())
         .filter(Boolean);
 
@@ -306,7 +500,7 @@ Indian Delight"></textarea>
       showCurrentPair();
       updateProgress();
       updateRanking();
-      // Scroll to comparison section on mobile
+
       setTimeout(() => {
         document.getElementById("comparisonSection").scrollIntoView({ behavior: "smooth" });
       }, 50);
