@@ -285,6 +285,20 @@ body.theme-dark .choice-card {
   border-color: #1f2937;
 }
 
+/* Poster images */
+.option-poster {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+body.theme-dark .option-poster {
+  outline: 1px solid #1f2937;
+}
+
 .option-name {
   font-weight: 600;
   font-size: 1.05rem;
@@ -460,7 +474,6 @@ body.theme-dark .landing-card-cta {
     border-radius: 10px;
   }
 
-  /* FORCE horizontal A/B layout on mobile */
   .pair-container {
     flex-wrap: nowrap;
     flex-direction: row;

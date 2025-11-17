@@ -2,6 +2,7 @@ let items = [];      // { id, name, wins, removed }
 let pairs = [];      // [i, j] indices into items
 let pairIndex = 0;
 let currentPresetName = null;
+let currentPresetKey = null;    // which preset is active
 let hasShownRemoveConfirm = false; // show confirm only once
 
 const THEME_KEY = "hmd-theme";
@@ -64,6 +65,7 @@ function backToLanding() {
   if (landing) landing.style.display = "block";
   document.body.classList.add("landing-active");
   showChangeListButton(false);
+  currentPresetKey = null;
   window.scrollTo({ top: 0, behavior: "instant" });
 }
 
@@ -112,6 +114,7 @@ function startPreset(key) {
     ghibli: "Studio Ghibli Movies",
   };
 
+  currentPresetKey = key;
   currentPresetName = names[key] || "Preset";
 
   goToDecision();
@@ -132,6 +135,7 @@ function startCustomComparison() {
     return;
   }
 
+  currentPresetKey = "custom";
   currentPresetName = "Custom List";
   goToDecision();
   startComparisonFromList(lines);
@@ -205,13 +209,15 @@ function updateItemsCountLabel() {
   label.textContent = `${count} option${count === 1 ? "" : "s"}`;
 }
 
-/* ---------- SHOW CURRENT PAIR ---------- */
+/* ---------- SHOW CURRENT PAIR (with Ghibli posters) ---------- */
 
 function showCurrentPair() {
   const optionAName = document.getElementById("optionAName");
   const optionBName = document.getElementById("optionBName");
   const btnA = document.getElementById("optionAButton");
   const btnB = document.getElementById("optionBButton");
+  const imgA = document.getElementById("optionAImage");
+  const imgB = document.getElementById("optionBImage");
 
   if (!optionAName || !optionBName || !btnA || !btnB) return;
 
@@ -227,6 +233,15 @@ function showCurrentPair() {
     }
     btnA.disabled = true;
     btnB.disabled = true;
+
+    if (imgA) {
+      imgA.style.display = "none";
+      imgA.removeAttribute("src");
+    }
+    if (imgB) {
+      imgB.style.display = "none";
+      imgB.removeAttribute("src");
+    }
     return;
   }
 
@@ -237,11 +252,53 @@ function showCurrentPair() {
       pairIndex++;
       continue;
     }
-    // Found a valid pair
-    optionAName.textContent = items[i].name;
-    optionBName.textContent = items[j].name;
+
+    const nameA = items[i].name;
+    const nameB = items[j].name;
+
+    optionAName.textContent = nameA;
+    optionBName.textContent = nameB;
     btnA.disabled = false;
     btnB.disabled = false;
+
+    // Only show posters for the Ghibli preset
+    if (currentPresetKey === "ghibli" && window.GHIBLI_POSTERS) {
+      const posterA = window.GHIBLI_POSTERS[nameA];
+      const posterB = window.GHIBLI_POSTERS[nameB];
+
+      if (imgA) {
+        if (posterA) {
+          imgA.src = posterA;
+          imgA.alt = nameA + " poster";
+          imgA.style.display = "block";
+        } else {
+          imgA.style.display = "none";
+          imgA.removeAttribute("src");
+        }
+      }
+
+      if (imgB) {
+        if (posterB) {
+          imgB.src = posterB;
+          imgB.alt = nameB + " poster";
+          imgB.style.display = "block";
+        } else {
+          imgB.style.display = "none";
+          imgB.removeAttribute("src");
+        }
+      }
+    } else {
+      // Non-Ghibli presets: hide images
+      if (imgA) {
+        imgA.style.display = "none";
+        imgA.removeAttribute("src");
+      }
+      if (imgB) {
+        imgB.style.display = "none";
+        imgB.removeAttribute("src");
+      }
+    }
+
     return;
   }
 
@@ -250,6 +307,15 @@ function showCurrentPair() {
   optionBName.textContent = "All comparisons done.";
   btnA.disabled = true;
   btnB.disabled = true;
+
+  if (imgA) {
+    imgA.style.display = "none";
+    imgA.removeAttribute("src");
+  }
+  if (imgB) {
+    imgB.style.display = "none";
+    imgB.removeAttribute("src");
+  }
 }
 
 /* ---------- CHOOSE WINNER ---------- */
