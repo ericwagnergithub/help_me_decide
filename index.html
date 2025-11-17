@@ -77,7 +77,7 @@
           <div class="landing-card-cta">Use preloaded trips →</div>
         </div>
 
-        <!-- ⭐ NEW: GHIBLI -->
+        <!-- Ghibli -->
         <div class="landing-card" onclick="startPreset('ghibli')">
           <div>
             <div class="landing-card-title">Ghibli Movies</div>
@@ -88,32 +88,54 @@
           <div class="landing-card-cta">Use Ghibli list →</div>
         </div>
 
+        <!-- NEW: Custom list -->
+        <div class="landing-card" onclick="goToCustom()">
+          <div>
+            <div class="landing-card-title">Custom list</div>
+            <div class="landing-card-desc">
+              Paste your own options and let the app decide with you.
+            </div>
+          </div>
+          <div class="landing-card-cta">Create custom list →</div>
+        </div>
+
       </div>
 
       <div class="landing-footer">
-        You can edit the list or paste your own after you pick a category.
+        Presets go straight to ranking. Use a custom list if you want to paste your own options.
       </div>
     </section>
 
-    <!-- Main App Section -->
-    <section id="mainSection" style="display:none;">
-      <h1>Help Me Decide</h1>
+    <!-- NEW: Custom list page -->
+    <section id="customSection" style="display:none;">
+      <h1>Custom list</h1>
       <div class="subtitle">
-        Compare two at a time to rank restaurants, movies, trips, or anything else.
+        Paste or type your own options, one per line. Then we’ll rank them together.
       </div>
 
       <div>
         <div class="label">Options (one per line)</div>
-        <textarea id="listInput" placeholder="Type or paste your own list here..."></textarea>
+        <textarea id="customListInput" placeholder="Example:
+Option 1
+Option 2
+Option 3"></textarea>
 
         <div class="button-row">
-          <button class="primary" onclick="startComparison()">Start comparing</button>
-          <button class="secondary" onclick="loadExample()">Load generic example</button>
-          <button class="secondary" onclick="clearAll()">Clear</button>
+          <button class="primary" onclick="startCustomComparison()">Start comparing</button>
+          <button class="secondary" onclick="loadExample()">Load example list</button>
+          <button class="secondary" onclick="backToLanding()">Back</button>
         </div>
       </div>
+    </section>
 
-      <div id="comparisonSection" style="display:none;">
+    <!-- Decision / Comparison page (used by presets & custom) -->
+    <section id="decisionSection" style="display:none;">
+      <h1>Help Me Decide</h1>
+      <div class="subtitle">
+        Compare two at a time to rank your options.
+      </div>
+
+      <div id="comparisonSection">
         <div class="status-row">
           <div><strong id="itemsCountLabel"></strong></div>
           <div id="progressLabel"></div>
@@ -154,8 +176,6 @@
   <script src="js/presets-baby-names.js"></script>
   <script src="js/presets-movies.js"></script>
   <script src="js/presets-travel.js"></script>
-
-  <!-- ⭐ New Ghibli preset -->
   <script src="js/presets-ghibli.js"></script>
 
   <!-- Main app logic -->

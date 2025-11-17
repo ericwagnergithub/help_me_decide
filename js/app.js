@@ -23,7 +23,6 @@ function getInitialTheme() {
     return stored;
   }
 
-  // Fallback: respect OS preference
   const prefersDark =
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -45,22 +44,43 @@ function initTheme() {
   });
 }
 
+// Ensure theme init runs whether DOMContentLoaded has fired or not
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initTheme);
 } else {
-  // DOM is already ready, just run it
   initTheme();
 }
 
+/* ---------- SECTION NAVIGATION ---------- */
 
-/* ---------- NAVIGATION / PRESETS ---------- */
-
-function goToMain() {
+function hideAllSections() {
   document.getElementById("landingSection").style.display = "none";
-  document.getElementById("mainSection").style.display = "block";
+  document.getElementById("customSection").style.display = "none";
+  document.getElementById("decisionSection").style.display = "none";
+}
+
+function goToCustom() {
+  hideAllSections();
+  document.getElementById("customSection").style.display = "block";
   document.body.classList.remove("landing-active");
   window.scrollTo({ top: 0, behavior: "instant" });
 }
+
+function backToLanding() {
+  hideAllSections();
+  document.getElementById("landingSection").style.display = "block";
+  document.body.classList.add("landing-active");
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+
+function goToDecision() {
+  hideAllSections();
+  document.getElementById("decisionSection").style.display = "block";
+  document.body.classList.remove("landing-active");
+  window.scrollTo({ top: 0, behavior: "instant" });
+}
+
+/* ---------- PRESETS & CUSTOM LIST ---------- */
 
 function startPreset(key) {
   const presets = window.PRESETS || {};
@@ -71,13 +91,34 @@ function startPreset(key) {
     return;
   }
 
-  const input = document.getElementById("listInput");
-  input.value = preset.join("\n");
-  goToMain();
-  startComparison();
+  const cleaned = preset
+    .map((s) => String(s).trim())
+    .filter(Boolean);
+
+  if (cleaned.length < 2) {
+    alert("This preset does not have enough options.");
+    return;
+  }
+
+  goToDecision();
+  startComparisonFromList(cleaned);
 }
 
-/* ---------- GENERIC EXAMPLE & CLEAR ---------- */
+function startCustomComparison() {
+  const rawText = document.getElementById("customListInput").value || "";
+  const lines = rawText
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (lines.length < 2) {
+    alert("Please enter at least 2 options.");
+    return;
+  }
+
+  goToDecision();
+  startComparisonFromList(lines);
+}
 
 function loadExample() {
   const example = [
@@ -89,33 +130,15 @@ function loadExample() {
     "Ramen House",
     "BBQ Shack"
   ].join("\n");
-  document.getElementById("listInput").value = example;
+
+  const input = document.getElementById("customListInput");
+  input.value = example;
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function clearAll() {
-  document.getElementById("listInput").value = "";
-  items = [];
-  pairs = [];
-  pairIndex = 0;
-  document.getElementById("comparisonSection").style.display = "none";
-}
+/* ---------- CORE COMPARISON LOGIC ---------- */
 
-/* ---------- COMPARISON FLOW ---------- */
-
-function startComparison() {
-  const rawLines = document
-    .getElementById("listInput")
-    .value
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  if (rawLines.length < 2) {
-    alert("Please enter at least 2 options.");
-    return;
-  }
-
+function startComparisonFromList(rawLines) {
   const uniqueNames = Array.from(new Set(rawLines));
 
   items = uniqueNames.map((name, idx) => ({
