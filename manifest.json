@@ -1,6 +1,6 @@
 {
   "name": "Help Me Decide",
-  "short_name": "Decide",
+  "short_name": "Help Me Decide",
   "description": "Compare two at a time to quickly rank baby names, restaurants, movies, and more.",
   "start_url": "./",
   "scope": "./",
