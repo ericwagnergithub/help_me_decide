@@ -2,6 +2,53 @@ let items = [];   // { id, name, wins }
 let pairs = [];   // [i, j]
 let pairIndex = 0;
 
+const THEME_KEY = "hmd-theme";
+
+/* ---------- THEME HANDLING ---------- */
+
+function applyTheme(theme) {
+  const body = document.body;
+  body.classList.remove("theme-light", "theme-dark");
+
+  if (theme === "dark") {
+    body.classList.add("theme-dark");
+  } else {
+    body.classList.add("theme-light");
+  }
+}
+
+function getInitialTheme() {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored === "light" || stored === "dark") {
+    return stored;
+  }
+
+  // Fallback: respect OS preference
+  const prefersDark =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return prefersDark ? "dark" : "light";
+}
+
+function initTheme() {
+  const initial = getInitialTheme();
+  applyTheme(initial);
+
+  const toggle = document.getElementById("themeToggle");
+  if (!toggle) return;
+
+  toggle.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("theme-dark");
+    const next = isDark ? "light" : "dark";
+    applyTheme(next);
+    localStorage.setItem(THEME_KEY, next);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", initTheme);
+
+/* ---------- NAVIGATION / PRESETS ---------- */
+
 function goToMain() {
   document.getElementById("landingSection").style.display = "none";
   document.getElementById("mainSection").style.display = "block";
@@ -23,6 +70,8 @@ function startPreset(key) {
   goToMain();
   startComparison();
 }
+
+/* ---------- GENERIC EXAMPLE & CLEAR ---------- */
 
 function loadExample() {
   const example = [
@@ -46,12 +95,14 @@ function clearAll() {
   document.getElementById("comparisonSection").style.display = "none";
 }
 
+/* ---------- COMPARISON FLOW ---------- */
+
 function startComparison() {
   const rawLines = document
     .getElementById("listInput")
     .value
     .split("\n")
-    .map(s => s.trim())
+    .map((s) => s.trim())
     .filter(Boolean);
 
   if (rawLines.length < 2) {
@@ -91,7 +142,9 @@ function startComparison() {
   updateRanking();
 
   setTimeout(() => {
-    document.getElementById("comparisonSection").scrollIntoView({ behavior: "smooth" });
+    document
+      .getElementById("comparisonSection")
+      .scrollIntoView({ behavior: "smooth" });
   }, 50);
 }
 
@@ -136,6 +189,8 @@ function choose(choice) {
   showCurrentPair();
 }
 
+/* ---------- PROGRESS & RANKING ---------- */
+
 function updateProgress() {
   const total = pairs.length;
   const done = Math.min(pairIndex, total);
@@ -152,9 +207,15 @@ function updateProgress() {
 
   const percent = (done / total) * 100;
   progressLabel.textContent =
-    "Compared " + done + " of " + total + " pairs (" +
-    percent.toFixed(1) + "%), " +
-    remaining + " left";
+    "Compared " +
+    done +
+    " of " +
+    total +
+    " pairs (" +
+    percent.toFixed(1) +
+    "%), " +
+    remaining +
+    " left";
 
   progressBar.style.width = percent + "%";
 }
@@ -167,15 +228,23 @@ function updateRanking() {
     (a, b) => b.wins - a.wins || a.name.localeCompare(b.name)
   );
 
-  let html = "<table><thead><tr>" +
+  let html =
+    "<table><thead><tr>" +
     "<th>#</th><th>Option</th><th>Wins</th>" +
     "</tr></thead><tbody>";
 
   sorted.forEach((item, idx) => {
-    html += "<tr>" +
-      "<td>" + (idx + 1) + "</td>" +
-      "<td>" + escapeHtml(item.name) + "</td>" +
-      "<td>" + item.wins + "</td>" +
+    html +=
+      "<tr>" +
+      "<td>" +
+      (idx + 1) +
+      "</td>" +
+      "<td>" +
+      escapeHtml(item.name) +
+      "</td>" +
+      "<td>" +
+      item.wins +
+      "</td>" +
       "</tr>";
   });
 
@@ -184,6 +253,8 @@ function updateRanking() {
   rankingContainer.classList.remove("empty-state");
   rankingContainer.innerHTML = html;
 }
+
+/* ---------- UTIL ---------- */
 
 function escapeHtml(str) {
   return str
