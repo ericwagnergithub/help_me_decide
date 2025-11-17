@@ -12,27 +12,11 @@ body.landing-active {
   overflow: hidden;
 }
 
-/* Light theme (default) */
-body.theme-light {
-  background: #f3f4f6;
-  color: #111827;
-}
-
-/* Dark theme */
-body.theme-dark {
-  background: #020617;
-  color: #e5e7eb;
-}
-
-
-/* --- Top Navigation Bar --- */
-
+/* --- Top bar: back + logo + theme --- */
 .topbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: transparent;
-  padding: 4px 4px 12px;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
@@ -44,7 +28,7 @@ body.theme-dark {
   color: #111827;
   border: none;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.05s ease;
+  flex-shrink: 0;
 }
 
 .topbar-button:active {
@@ -57,19 +41,24 @@ body.theme-dark .topbar-button {
 }
 
 .topbar-logo {
-  font-weight: 700;
-  font-size: 1.2rem;
+  flex: 1;
   text-align: center;
-  flex-grow: 1;
+  font-weight: 700;
+  font-size: 1.1rem;
   opacity: 0.9;
-  pointer-events: none; /* Prevent clicks */
 }
 
-/* Override default theme toggle positioning */
-#themeToggle {
-  margin-left: auto;
+/* Light theme (default) */
+body.theme-light {
+  background: #f3f4f6;
+  color: #111827;
 }
 
+/* Dark theme */
+body.theme-dark {
+  background: #020617;
+  color: #e5e7eb;
+}
 
 /* Card wrapper */
 .app {
@@ -200,12 +189,6 @@ body.theme-dark button.secondary {
 }
 
 /* Theme toggle */
-.theme-toggle-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-}
-
 .theme-toggle {
   padding: 6px 10px;
   border-radius: 999px;
@@ -214,6 +197,9 @@ body.theme-dark button.secondary {
   align-items: center;
   gap: 4px;
   font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .theme-icon {
