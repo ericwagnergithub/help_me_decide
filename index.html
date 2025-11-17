@@ -9,9 +9,15 @@
 <body class="landing-active theme-light">
   <div class="app">
 
-    <!-- Theme toggle -->
-    <div class="theme-toggle-container">
-      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light and dark mode">
+    <!-- GLOBAL HEADER BAR -->
+    <div class="topbar">
+      <button id="changeListButton" class="topbar-button" onclick="backToLanding()" style="display:none;">
+        ← Change list
+      </button>
+
+      <div class="topbar-logo">🤔 Help Me Decide</div>
+
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle light/dark">
         <span class="theme-icon theme-icon-sun">☀</span>
         <span class="theme-icon theme-icon-moon">🌙</span>
       </button>
@@ -21,69 +27,61 @@
     <section id="landingSection">
       <div class="landing-header">
         <div class="landing-title">Help Me Decide</div>
-        <div class="landing-subtitle">
-          Compare two at a time to quickly rank your favorites. What are you deciding today?
-        </div>
+        <div class="landing-subtitle">Pick something to rank.</div>
       </div>
 
       <div class="landing-grid">
 
         <div class="landing-card" onclick="startPreset('restaurants')">
           <div><div class="landing-card-title">Restaurant types</div>
-          <div class="landing-card-desc">Can’t pick what to eat tonight?</div></div>
+          <div class="landing-card-desc">Can’t pick what to eat?</div></div>
           <div class="landing-card-cta">Use cuisines →</div>
         </div>
 
         <div class="landing-card" onclick="startPreset('babyNames')">
           <div><div class="landing-card-title">Baby names</div>
-          <div class="landing-card-desc">Quickly narrow down your list.</div></div>
-          <div class="landing-card-cta">Use baby names →</div>
+          <div class="landing-card-desc">Quickly narrow down.</div></div>
+          <div class="landing-card-cta">Use names →</div>
         </div>
 
         <div class="landing-card" onclick="startPreset('movies')">
-          <div><div class="landing-card-title">Movies to watch</div>
-          <div class="landing-card-desc">Rank the movies you want to see.</div></div>
-          <div class="landing-card-cta">Use movie list →</div>
+          <div><div class="landing-card-title">Movies</div>
+          <div class="landing-card-desc">Build your watchlist.</div></div>
+          <div class="landing-card-cta">Use movies →</div>
         </div>
 
         <div class="landing-card" onclick="startPreset('travel')">
           <div><div class="landing-card-title">Travel destinations</div>
-          <div class="landing-card-desc">Where should you go next?</div></div>
-          <div class="landing-card-cta">Use travel list →</div>
+          <div class="landing-card-desc">Where should you go?</div></div>
+          <div class="landing-card-cta">Use destinations →</div>
         </div>
 
         <div class="landing-card" onclick="startPreset('ghibli')">
           <div><div class="landing-card-title">Ghibli Movies</div>
-          <div class="landing-card-desc">Rank every Studio Ghibli film.</div></div>
+          <div class="landing-card-desc">Rank all Ghibli films.</div></div>
           <div class="landing-card-cta">Use Ghibli list →</div>
         </div>
 
-        <!-- Custom list -->
         <div class="landing-card" onclick="goToCustom()">
           <div><div class="landing-card-title">Custom list</div>
           <div class="landing-card-desc">Paste your own options.</div></div>
-          <div class="landing-card-cta">Create custom list →</div>
+          <div class="landing-card-cta">Start custom →</div>
         </div>
 
       </div>
-
-      <div class="landing-footer">
-        Presets go straight to ranking. Use a custom list if you want to paste your own options.
-      </div>
     </section>
 
-    <!-- Custom List Page -->
+    <!-- Custom List -->
     <section id="customSection" style="display:none;">
       <h1>Custom list</h1>
-      <div class="subtitle">Paste your own options, one per line.</div>
 
       <div>
-        <div class="label">Options</div>
+        <div class="label">Options (one per line)</div>
         <textarea id="customListInput" placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
 
         <div class="button-row">
           <button class="primary" onclick="startCustomComparison()">Start comparing</button>
-          <button class="secondary" onclick="loadExample()">Load example</button>
+          <button class="secondary" onclick="loadExample()">Example list</button>
           <button class="secondary" onclick="backToLanding()">Back</button>
         </div>
       </div>
@@ -91,10 +89,7 @@
 
     <!-- Decision Page -->
     <section id="decisionSection" style="display:none;">
-      <h1 id="decisionTitle">Help Me Decide</h1>
-      <div class="subtitle" id="decisionSubtitle">Ranking your options…</div>
-
-      <button class="secondary" style="margin:10px 0;" onclick="backToLanding()">← Change list</button>
+      <h1 id="decisionTitle">Ranking</h1>
 
       <div id="comparisonSection">
         <div class="status-row">
@@ -119,8 +114,6 @@
             <button class="primary" id="optionBButton" onclick="choose('B')">Pick B</button>
           </div>
         </div>
-
-        <div class="tip">Tip: trust your gut!</div>
 
         <div class="ranking">
           <h3>Live ranking</h3>

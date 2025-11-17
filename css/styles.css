@@ -24,6 +24,53 @@ body.theme-dark {
   color: #e5e7eb;
 }
 
+
+/* --- Top Navigation Bar --- */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  padding: 4px 4px 12px;
+  margin-bottom: 8px;
+}
+
+.topbar-button {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #111827;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.topbar-button:active {
+  transform: translateY(1px);
+}
+
+body.theme-dark .topbar-button {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.topbar-logo {
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: center;
+  flex-grow: 1;
+  opacity: 0.9;
+  pointer-events: none; /* Prevent clicks */
+}
+
+/* Override default theme toggle positioning */
+#themeToggle {
+  margin-left: auto;
+}
+
+
 /* Card wrapper */
 .app {
   max-width: 900px;

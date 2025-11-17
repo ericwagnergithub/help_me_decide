@@ -5,7 +5,7 @@ let currentPresetName = null;
 
 const THEME_KEY = "hmd-theme";
 
-/* ---------- THEME HANDLING ---------- */
+/* ---------- THEME ---------- */
 
 function applyTheme(theme) {
   document.body.classList.remove("theme-light", "theme-dark");
@@ -26,11 +26,10 @@ function initTheme() {
   applyTheme(getInitialTheme());
 
   const toggle = document.getElementById("themeToggle");
-  if (!toggle) return;
-
   toggle.onclick = () => {
-    const isDark = document.body.classList.contains("theme-dark");
-    const next = isDark ? "light" : "dark";
+    const next = document.body.classList.contains("theme-dark")
+      ? "light"
+      : "dark";
     applyTheme(next);
     localStorage.setItem(THEME_KEY, next);
   };
@@ -51,9 +50,15 @@ function hideAllSections() {
   });
 }
 
+function showChangeListButton(show) {
+  document.getElementById("changeListButton").style.display =
+    show ? "inline-block" : "none";
+}
+
 function backToLanding() {
   hideAllSections();
   document.getElementById("landingSection").style.display = "block";
+  showChangeListButton(false);
   document.body.classList.add("landing-active");
   window.scrollTo({ top: 0 });
 }
@@ -61,6 +66,7 @@ function backToLanding() {
 function goToCustom() {
   hideAllSections();
   document.getElementById("customSection").style.display = "block";
+  showChangeListButton(true);
   document.body.classList.remove("landing-active");
   window.scrollTo({ top: 0 });
 }
@@ -68,18 +74,12 @@ function goToCustom() {
 function goToDecision() {
   hideAllSections();
   document.getElementById("decisionSection").style.display = "block";
+  showChangeListButton(true);
 
-  // Update title + subtitle
   const title = document.getElementById("decisionTitle");
-  const subtitle = document.getElementById("decisionSubtitle");
-
   title.textContent = currentPresetName
     ? `Ranking: ${currentPresetName}`
-    : "Ranking Options";
-
-  subtitle.textContent = currentPresetName
-    ? `You're ranking items from: ${currentPresetName}`
-    : "Compare two at a time to rank your options.";
+    : "Ranking";
 
   window.scrollTo({ top: 0 });
 }
@@ -88,17 +88,12 @@ function goToDecision() {
 
 function startPreset(key) {
   const presets = window.PRESETS || {};
-  const preset = presets[key];
-
-  if (!preset) {
-    alert("Preset not found.");
-    return;
-  }
+  const list = presets[key];
 
   const names = {
     restaurants: "Restaurant Types",
     babyNames: "Baby Names",
-    movies: "Popular Movies",
+    movies: "Movies",
     travel: "Travel Destinations",
     ghibli: "Studio Ghibli Movies"
   };
@@ -106,7 +101,7 @@ function startPreset(key) {
   currentPresetName = names[key] || "Preset";
 
   goToDecision();
-  startComparisonFromList(preset);
+  startComparisonFromList(list);
 }
 
 /* ---------- CUSTOM LIST ---------- */
@@ -130,12 +125,12 @@ function loadExample() {
     "Pizza Palace\nSushi World\nBurger Town\nTaco Fiesta\nRamen House";
 }
 
-/* ---------- COMPARISON FLOW ---------- */
+/* ---------- COMPARISON ---------- */
 
 function startComparisonFromList(list) {
-  const unique = [...new Set(list.map(x => x.trim()).filter(Boolean))];
+  const unique = [...new Set(list.map(x => x.trim()))];
 
-  items = unique.map((name, idx) => ({ id: idx, name, wins: 0 }));
+  items = unique.map((name, id) => ({ id, name, wins: 0 }));
   pairs = [];
 
   for (let i = 0; i < items.length; i++) {
@@ -144,7 +139,6 @@ function startComparisonFromList(list) {
     }
   }
 
-  // Shuffle
   for (let i = pairs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
@@ -168,7 +162,7 @@ function showCurrentPair() {
 
   if (pairIndex >= pairs.length) {
     A.textContent = "Finished!";
-    B.textContent = "All comparisons complete.";
+    B.textContent = "All comparisons done.";
     btnA.disabled = true;
     btnB.disabled = true;
     return;
@@ -198,11 +192,10 @@ function updateProgress() {
   const total = pairs.length;
   const done = Math.min(pairIndex, total);
 
-  const pct = (done / total) * 100;
-
   document.getElementById("progressLabel").textContent =
     `Compared ${done} of ${total} pairs`;
-  document.getElementById("progressBar").style.width = pct + "%";
+  document.getElementById("progressBar").style.width =
+    (done / total) * 100 + "%";
 }
 
 /* ---------- RANKING ---------- */
@@ -217,7 +210,11 @@ function updateRanking() {
   let html = "<table><thead><tr><th>#</th><th>Option</th><th>Wins</th></tr></thead><tbody>";
 
   sorted.forEach((item, idx) => {
-    html += `<tr><td>${idx + 1}</td><td>${item.name}</td><td>${item.wins}</td></tr>`;
+    html += `<tr>
+      <td>${idx + 1}</td>
+      <td>${item.name}</td>
+      <td>${item.wins}</td>
+    </tr>`;
   });
 
   html += "</tbody></table>";
