@@ -1,160 +1,150 @@
-let items = [];   // { id, name, wins }
-let pairs = [];   // [i, j]
+let items = [];
+let pairs = [];
 let pairIndex = 0;
+let currentPresetName = null;
 
 const THEME_KEY = "hmd-theme";
 
 /* ---------- THEME HANDLING ---------- */
 
 function applyTheme(theme) {
-  const body = document.body;
-  body.classList.remove("theme-light", "theme-dark");
-
-  if (theme === "dark") {
-    body.classList.add("theme-dark");
-  } else {
-    body.classList.add("theme-light");
-  }
+  document.body.classList.remove("theme-light", "theme-dark");
+  document.body.classList.add(theme === "dark" ? "theme-dark" : "theme-light");
 }
 
 function getInitialTheme() {
   const stored = localStorage.getItem(THEME_KEY);
-  if (stored === "light" || stored === "dark") {
-    return stored;
-  }
+  if (stored) return stored;
 
-  const prefersDark =
-    window.matchMedia &&
+  const prefersDark = window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;
+
   return prefersDark ? "dark" : "light";
 }
 
 function initTheme() {
-  const initial = getInitialTheme();
-  applyTheme(initial);
+  applyTheme(getInitialTheme());
 
   const toggle = document.getElementById("themeToggle");
   if (!toggle) return;
 
-  toggle.addEventListener("click", () => {
+  toggle.onclick = () => {
     const isDark = document.body.classList.contains("theme-dark");
     const next = isDark ? "light" : "dark";
     applyTheme(next);
     localStorage.setItem(THEME_KEY, next);
-  });
+  };
 }
 
-// Ensure theme init runs whether DOMContentLoaded has fired or not
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initTheme);
 } else {
   initTheme();
 }
 
-/* ---------- SECTION NAVIGATION ---------- */
+/* ---------- NAVIGATION ---------- */
 
 function hideAllSections() {
-  document.getElementById("landingSection").style.display = "none";
-  document.getElementById("customSection").style.display = "none";
-  document.getElementById("decisionSection").style.display = "none";
-}
-
-function goToCustom() {
-  hideAllSections();
-  document.getElementById("customSection").style.display = "block";
-  document.body.classList.remove("landing-active");
-  window.scrollTo({ top: 0, behavior: "instant" });
+  ["landingSection", "customSection", "decisionSection"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = "none";
+  });
 }
 
 function backToLanding() {
   hideAllSections();
   document.getElementById("landingSection").style.display = "block";
   document.body.classList.add("landing-active");
-  window.scrollTo({ top: 0, behavior: "instant" });
+  window.scrollTo({ top: 0 });
+}
+
+function goToCustom() {
+  hideAllSections();
+  document.getElementById("customSection").style.display = "block";
+  document.body.classList.remove("landing-active");
+  window.scrollTo({ top: 0 });
 }
 
 function goToDecision() {
   hideAllSections();
   document.getElementById("decisionSection").style.display = "block";
-  document.body.classList.remove("landing-active");
-  window.scrollTo({ top: 0, behavior: "instant" });
+
+  // Update title + subtitle
+  const title = document.getElementById("decisionTitle");
+  const subtitle = document.getElementById("decisionSubtitle");
+
+  title.textContent = currentPresetName
+    ? `Ranking: ${currentPresetName}`
+    : "Ranking Options";
+
+  subtitle.textContent = currentPresetName
+    ? `You're ranking items from: ${currentPresetName}`
+    : "Compare two at a time to rank your options.";
+
+  window.scrollTo({ top: 0 });
 }
 
-/* ---------- PRESETS & CUSTOM LIST ---------- */
+/* ---------- PRESETS ---------- */
 
 function startPreset(key) {
   const presets = window.PRESETS || {};
   const preset = presets[key];
 
-  if (!preset || !preset.length) {
-    alert("That preset is not available yet.");
+  if (!preset) {
+    alert("Preset not found.");
     return;
   }
 
-  const cleaned = preset
-    .map((s) => String(s).trim())
-    .filter(Boolean);
+  const names = {
+    restaurants: "Restaurant Types",
+    babyNames: "Baby Names",
+    movies: "Popular Movies",
+    travel: "Travel Destinations",
+    ghibli: "Studio Ghibli Movies"
+  };
 
-  if (cleaned.length < 2) {
-    alert("This preset does not have enough options.");
-    return;
-  }
+  currentPresetName = names[key] || "Preset";
 
   goToDecision();
-  startComparisonFromList(cleaned);
+  startComparisonFromList(preset);
 }
 
+/* ---------- CUSTOM LIST ---------- */
+
 function startCustomComparison() {
-  const rawText = document.getElementById("customListInput").value || "";
-  const lines = rawText
-    .split("\n")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const raw = document.getElementById("customListInput").value;
+  const lines = raw.split("\n").map(x => x.trim()).filter(Boolean);
 
   if (lines.length < 2) {
     alert("Please enter at least 2 options.");
     return;
   }
 
+  currentPresetName = "Custom List";
   goToDecision();
   startComparisonFromList(lines);
 }
 
 function loadExample() {
-  const example = [
-    "Pizza Palace",
-    "Sushi World",
-    "Burger Town",
-    "Taco Fiesta",
-    "Indian Delight",
-    "Ramen House",
-    "BBQ Shack"
-  ].join("\n");
-
-  const input = document.getElementById("customListInput");
-  input.value = example;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  document.getElementById("customListInput").value =
+    "Pizza Palace\nSushi World\nBurger Town\nTaco Fiesta\nRamen House";
 }
 
-/* ---------- CORE COMPARISON LOGIC ---------- */
+/* ---------- COMPARISON FLOW ---------- */
 
-function startComparisonFromList(rawLines) {
-  const uniqueNames = Array.from(new Set(rawLines));
+function startComparisonFromList(list) {
+  const unique = [...new Set(list.map(x => x.trim()).filter(Boolean))];
 
-  items = uniqueNames.map((name, idx) => ({
-    id: idx,
-    name,
-    wins: 0
-  }));
-
+  items = unique.map((name, idx) => ({ id: idx, name, wins: 0 }));
   pairs = [];
+
   for (let i = 0; i < items.length; i++) {
     for (let j = i + 1; j < items.length; j++) {
       pairs.push([i, j]);
     }
   }
 
-  // Shuffle pairs
+  // Shuffle
   for (let i = pairs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
@@ -163,131 +153,74 @@ function startComparisonFromList(rawLines) {
   pairIndex = 0;
 
   document.getElementById("itemsCountLabel").textContent =
-    items.length + " option" + (items.length === 1 ? "" : "s");
+    `${items.length} options`;
 
-  document.getElementById("comparisonSection").style.display = "block";
   showCurrentPair();
   updateProgress();
   updateRanking();
-
-  setTimeout(() => {
-    document
-      .getElementById("comparisonSection")
-      .scrollIntoView({ behavior: "smooth" });
-  }, 50);
 }
 
 function showCurrentPair() {
-  const optionAName = document.getElementById("optionAName");
-  const optionBName = document.getElementById("optionBName");
+  const A = document.getElementById("optionAName");
+  const B = document.getElementById("optionBName");
   const btnA = document.getElementById("optionAButton");
   const btnB = document.getElementById("optionBButton");
 
   if (pairIndex >= pairs.length) {
-    optionAName.textContent = "No more comparisons.";
-    optionBName.textContent = "You’re done!";
+    A.textContent = "Finished!";
+    B.textContent = "All comparisons complete.";
     btnA.disabled = true;
     btnB.disabled = true;
-    btnA.textContent = "Done";
-    btnB.textContent = "Done";
     return;
   }
 
   const [i, j] = pairs[pairIndex];
-  optionAName.textContent = items[i].name;
-  optionBName.textContent = items[j].name;
+  A.textContent = items[i].name;
+  B.textContent = items[j].name;
   btnA.disabled = false;
   btnB.disabled = false;
-  btnA.textContent = "Pick A";
-  btnB.textContent = "Pick B";
 }
 
 function choose(choice) {
-  if (pairIndex >= pairs.length) return;
-
   const [i, j] = pairs[pairIndex];
-  if (choice === "A") {
-    items[i].wins += 1;
-  } else if (choice === "B") {
-    items[j].wins += 1;
-  }
+  if (choice === "A") items[i].wins++;
+  else items[j].wins++;
 
-  pairIndex += 1;
+  pairIndex++;
   updateProgress();
   updateRanking();
   showCurrentPair();
 }
 
-/* ---------- PROGRESS & RANKING ---------- */
+/* ---------- PROGRESS ---------- */
 
 function updateProgress() {
   const total = pairs.length;
   const done = Math.min(pairIndex, total);
-  const remaining = Math.max(total - done, 0);
 
-  const progressLabel = document.getElementById("progressLabel");
-  const progressBar = document.getElementById("progressBar");
+  const pct = (done / total) * 100;
 
-  if (total === 0) {
-    progressLabel.textContent = "";
-    progressBar.style.width = "0%";
-    return;
-  }
-
-  const percent = (done / total) * 100;
-  progressLabel.textContent =
-    "Compared " +
-    done +
-    " of " +
-    total +
-    " pairs (" +
-    percent.toFixed(1) +
-    "%), " +
-    remaining +
-    " left";
-
-  progressBar.style.width = percent + "%";
+  document.getElementById("progressLabel").textContent =
+    `Compared ${done} of ${total} pairs`;
+  document.getElementById("progressBar").style.width = pct + "%";
 }
 
-function updateRanking() {
-  if (!items.length) return;
+/* ---------- RANKING ---------- */
 
-  const rankingContainer = document.getElementById("rankingContainer");
+function updateRanking() {
+  const container = document.getElementById("rankingContainer");
+
   const sorted = [...items].sort(
     (a, b) => b.wins - a.wins || a.name.localeCompare(b.name)
   );
 
-  let html =
-    "<table><thead><tr>" +
-    "<th>#</th><th>Option</th><th>Wins</th>" +
-    "</tr></thead><tbody>";
+  let html = "<table><thead><tr><th>#</th><th>Option</th><th>Wins</th></tr></thead><tbody>";
 
   sorted.forEach((item, idx) => {
-    html +=
-      "<tr>" +
-      "<td>" +
-      (idx + 1) +
-      "</td>" +
-      "<td>" +
-      escapeHtml(item.name) +
-      "</td>" +
-      "<td>" +
-      item.wins +
-      "</td>" +
-      "</tr>";
+    html += `<tr><td>${idx + 1}</td><td>${item.name}</td><td>${item.wins}</td></tr>`;
   });
 
   html += "</tbody></table>";
 
-  rankingContainer.classList.remove("empty-state");
-  rankingContainer.innerHTML = html;
-}
-
-/* ---------- UTIL ---------- */
-
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  container.innerHTML = html;
 }
