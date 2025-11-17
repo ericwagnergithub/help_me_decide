@@ -105,8 +105,8 @@ function startPreset(key) {
 
   const names = {
     restaurants: "Restaurant Types",
-    babyNames: "Baby Names",
-    movies: "Movies",
+    babyNamesBoys: "Baby Boy Names",
+    babyNamesGirls: "Baby Girl Names",
     travel: "Travel Destinations",
     ghibli: "Studio Ghibli Movies",
   };

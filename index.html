@@ -46,6 +46,7 @@
       </div>
 
       <div class="landing-grid">
+        <!-- Restaurants -->
         <div class="landing-card" onclick="startPreset('restaurants')">
           <div>
             <div class="landing-card-title">Restaurant types</div>
@@ -54,22 +55,25 @@
           <div class="landing-card-cta">Use cuisines →</div>
         </div>
 
-        <div class="landing-card" onclick="startPreset('babyNames')">
+        <!-- Baby boy names -->
+        <div class="landing-card" onclick="startPreset('babyNamesBoys')">
           <div>
-            <div class="landing-card-title">Baby names</div>
-            <div class="landing-card-desc">Quickly narrow down names.</div>
+            <div class="landing-card-title">Baby boy names</div>
+            <div class="landing-card-desc">Rank top boy name ideas.</div>
           </div>
-          <div class="landing-card-cta">Use baby names →</div>
+          <div class="landing-card-cta">Use boy list →</div>
         </div>
 
-        <div class="landing-card" onclick="startPreset('movies')">
+        <!-- Baby girl names -->
+        <div class="landing-card" onclick="startPreset('babyNamesGirls')">
           <div>
-            <div class="landing-card-title">Movies</div>
-            <div class="landing-card-desc">Build your watchlist.</div>
+            <div class="landing-card-title">Baby girl names</div>
+            <div class="landing-card-desc">Rank top girl name ideas.</div>
           </div>
-          <div class="landing-card-cta">Use movie list →</div>
+          <div class="landing-card-cta">Use girl list →</div>
         </div>
 
+        <!-- Travel destinations -->
         <div class="landing-card" onclick="startPreset('travel')">
           <div>
             <div class="landing-card-title">Travel destinations</div>
@@ -78,14 +82,16 @@
           <div class="landing-card-cta">Use travel list →</div>
         </div>
 
+        <!-- Ghibli movies -->
         <div class="landing-card" onclick="startPreset('ghibli')">
           <div>
-            <div class="landing-card-title">Ghibli Movies</div>
+            <div class="landing-card-title">Ghibli movies</div>
             <div class="landing-card-desc">Rank every Studio Ghibli film.</div>
           </div>
           <div class="landing-card-cta">Use Ghibli list →</div>
         </div>
 
+        <!-- Custom list -->
         <div class="landing-card" onclick="goToCustom()">
           <div>
             <div class="landing-card-title">Custom list</div>
@@ -156,7 +162,6 @@
   <!-- Preset data files -->
   <script src="js/presets-restaurants.js"></script>
   <script src="js/presets-baby-names.js"></script>
-  <script src="js/presets-movies.js"></script>
   <script src="js/presets-travel.js"></script>
   <script src="js/presets-ghibli.js"></script>
 
