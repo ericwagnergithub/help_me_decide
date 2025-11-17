@@ -45,7 +45,13 @@ function initTheme() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", initTheme);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initTheme);
+} else {
+  // DOM is already ready, just run it
+  initTheme();
+}
+
 
 /* ---------- NAVIGATION / PRESETS ---------- */
 
