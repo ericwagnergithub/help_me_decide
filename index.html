@@ -135,16 +135,32 @@
         </div>
 
         <div class="pair-container">
+          <!-- Option A card -->
           <div class="choice-card">
             <div class="label">Option A</div>
             <div class="option-name" id="optionAName"></div>
-            <button class="primary" id="optionAButton" onclick="choose('A')">Pick A</button>
+            <div class="button-row">
+              <button class="primary" id="optionAButton" onclick="choose('A')">
+                Pick A
+              </button>
+              <button class="secondary" type="button" onclick="removeOption('A')">
+                Remove this
+              </button>
+            </div>
           </div>
 
+          <!-- Option B card -->
           <div class="choice-card">
             <div class="label">Option B</div>
             <div class="option-name" id="optionBName"></div>
-            <button class="primary" id="optionBButton" onclick="choose('B')">Pick B</button>
+            <div class="button-row">
+              <button class="primary" id="optionBButton" onclick="choose('B')">
+                Pick B
+              </button>
+              <button class="secondary" type="button" onclick="removeOption('B')">
+                Remove this
+              </button>
+            </div>
           </div>
         </div>
 
