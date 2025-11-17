@@ -263,13 +263,13 @@ body.theme-dark .progress-bar-wrapper {
 /* Choices */
 .pair-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px;
   margin-top: 16px;
 }
 
 .choice-card {
-  flex: 1 1 220px;
+  flex: 1 1 50%;
   border-radius: 14px;
   border: 1px solid #e5e7eb;
   padding: 14px;
@@ -459,9 +459,13 @@ body.theme-dark .landing-card-cta {
     padding: 12px;
     border-radius: 10px;
   }
+
+  /* FORCE horizontal A/B layout on mobile */
   .pair-container {
-    flex-direction: column;
+    flex-wrap: nowrap;
+    flex-direction: row;
   }
+
   #landingSection {
     min-height: calc(100vh - 16px);
   }
