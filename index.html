@@ -8,6 +8,7 @@
 </head>
 <body class="landing-active theme-light">
   <div class="app">
+
     <!-- Theme toggle -->
     <div class="theme-toggle-container">
       <button
@@ -31,6 +32,8 @@
       </div>
 
       <div class="landing-grid">
+
+        <!-- Restaurants -->
         <div class="landing-card" onclick="startPreset('restaurants')">
           <div>
             <div class="landing-card-title">Restaurant types</div>
@@ -41,6 +44,7 @@
           <div class="landing-card-cta">Use preloaded cuisines →</div>
         </div>
 
+        <!-- Baby Names -->
         <div class="landing-card" onclick="startPreset('babyNames')">
           <div>
             <div class="landing-card-title">Baby names</div>
@@ -51,6 +55,7 @@
           <div class="landing-card-cta">Use preloaded names →</div>
         </div>
 
+        <!-- Movies -->
         <div class="landing-card" onclick="startPreset('movies')">
           <div>
             <div class="landing-card-title">Movies to watch</div>
@@ -61,6 +66,7 @@
           <div class="landing-card-cta">Use preloaded movies →</div>
         </div>
 
+        <!-- Travel -->
         <div class="landing-card" onclick="startPreset('travel')">
           <div>
             <div class="landing-card-title">Travel destinations</div>
@@ -70,6 +76,18 @@
           </div>
           <div class="landing-card-cta">Use preloaded trips →</div>
         </div>
+
+        <!-- ⭐ NEW: GHIBLI -->
+        <div class="landing-card" onclick="startPreset('ghibli')">
+          <div>
+            <div class="landing-card-title">Ghibli Movies</div>
+            <div class="landing-card-desc">
+              Rank every Studio Ghibli movie from Nausicaä to The Boy and the Heron.
+            </div>
+          </div>
+          <div class="landing-card-cta">Use Ghibli list →</div>
+        </div>
+
       </div>
 
       <div class="landing-footer">
@@ -77,7 +95,7 @@
       </div>
     </section>
 
-    <!-- Main App Section (textarea + comparison) -->
+    <!-- Main App Section -->
     <section id="mainSection" style="display:none;">
       <h1>Help Me Decide</h1>
       <div class="subtitle">
@@ -136,6 +154,9 @@
   <script src="js/presets-baby-names.js"></script>
   <script src="js/presets-movies.js"></script>
   <script src="js/presets-travel.js"></script>
+
+  <!-- ⭐ New Ghibli preset -->
+  <script src="js/presets-ghibli.js"></script>
 
   <!-- Main app logic -->
   <script src="js/app.js"></script>
