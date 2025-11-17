@@ -1,7 +1,8 @@
-let items = [];
-let pairs = [];
+let items = [];      // { id, name, wins, removed }
+let pairs = [];      // [i, j] indices into items
 let pairIndex = 0;
 let currentPresetName = null;
+let hasShownRemoveConfirm = false; // show confirm only once
 
 const THEME_KEY = "hmd-theme";
 
@@ -150,15 +151,15 @@ function loadExample() {
   document.getElementById("customListInput").value = example;
 }
 
-/* ---------- COMPARISON LOGIC ---------- */
+/* ---------- COMPARISON LOGIC (INITIAL SETUP) ---------- */
 
 function startComparisonFromList(rawLines) {
   const uniqueNames = Array.from(
     new Set(rawLines.map((s) => String(s).trim()).filter(Boolean))
   );
 
-  if (uniqueNames.length < 2) {
-    alert("Need at least 2 distinct options.");
+  if (uniqueNames.length < 1) {
+    alert("No options.");
     return;
   }
 
@@ -166,6 +167,7 @@ function startComparisonFromList(rawLines) {
     id: idx,
     name,
     wins: 0,
+    removed: false
   }));
 
   pairs = [];
@@ -182,16 +184,28 @@ function startComparisonFromList(rawLines) {
   }
 
   pairIndex = 0;
+  hasShownRemoveConfirm = false; // reset per run
 
-  const countLabel = document.getElementById("itemsCountLabel");
-  if (countLabel) {
-    countLabel.textContent = `${items.length} options`;
-  }
-
+  updateItemsCountLabel();
   showCurrentPair();
   updateProgress();
   updateRanking();
 }
+
+/* ---------- HELPERS ---------- */
+
+function activeItems() {
+  return items.filter((it) => !it.removed);
+}
+
+function updateItemsCountLabel() {
+  const label = document.getElementById("itemsCountLabel");
+  if (!label) return;
+  const count = activeItems().length;
+  label.textContent = `${count} option${count === 1 ? "" : "s"}`;
+}
+
+/* ---------- SHOW CURRENT PAIR ---------- */
 
 function showCurrentPair() {
   const optionAName = document.getElementById("optionAName");
@@ -201,32 +215,107 @@ function showCurrentPair() {
 
   if (!optionAName || !optionBName || !btnA || !btnB) return;
 
-  if (pairIndex >= pairs.length) {
-    optionAName.textContent = "Finished!";
-    optionBName.textContent = "All comparisons done.";
+  // If <=1 active item, no comparisons left
+  if (activeItems().length <= 1) {
+    const remaining = activeItems();
+    if (remaining.length === 1) {
+      optionAName.textContent = remaining[0].name;
+      optionBName.textContent = "No other options left.";
+    } else {
+      optionAName.textContent = "No options left.";
+      optionBName.textContent = "";
+    }
     btnA.disabled = true;
     btnB.disabled = true;
     return;
   }
 
-  const [i, j] = pairs[pairIndex];
-  optionAName.textContent = items[i].name;
-  optionBName.textContent = items[j].name;
-  btnA.disabled = false;
-  btnB.disabled = false;
+  // Advance pairIndex until we hit a pair whose items are both not removed
+  while (pairIndex < pairs.length) {
+    const [i, j] = pairs[pairIndex];
+    if (items[i].removed || items[j].removed) {
+      pairIndex++;
+      continue;
+    }
+    // Found a valid pair
+    optionAName.textContent = items[i].name;
+    optionBName.textContent = items[j].name;
+    btnA.disabled = false;
+    btnB.disabled = false;
+    return;
+  }
+
+  // If we fall out of the loop, there are no more valid pairs
+  optionAName.textContent = "Finished!";
+  optionBName.textContent = "All comparisons done.";
+  btnA.disabled = true;
+  btnB.disabled = true;
 }
+
+/* ---------- CHOOSE WINNER ---------- */
 
 function choose(choice) {
   if (pairIndex >= pairs.length) return;
 
   const [i, j] = pairs[pairIndex];
+
+  // Skip if either was removed in between (just move on)
+  if (items[i].removed || items[j].removed) {
+    pairIndex++;
+    updateProgress();
+    showCurrentPair();
+    updateRanking();
+    return;
+  }
+
   if (choice === "A") {
     items[i].wins += 1;
   } else if (choice === "B") {
     items[j].wins += 1;
   }
 
-  pairIndex += 1;
+  pairIndex++;
+  updateProgress();
+  updateRanking();
+  showCurrentPair();
+}
+
+/* ---------- REMOVE OPTION (PRESERVE PROGRESS) ---------- */
+
+function removeOption(which) {
+  const activeCount = activeItems().length;
+  if (activeCount <= 1) {
+    alert("You can't remove any more options.");
+    return;
+  }
+
+  if (pairIndex >= pairs.length) {
+    // No current pair; nothing to remove contextually
+    return;
+  }
+
+  // First-time confirmation
+  if (!hasShownRemoveConfirm) {
+    const ok = window.confirm(
+      "Removing an option will permanently drop it from this ranking.\n\n" +
+      "Previous comparisons stay, but this option won't appear or win going forward.\n\n" +
+      "Do you want to remove it?"
+    );
+    if (!ok) {
+      return;
+    }
+    hasShownRemoveConfirm = true;
+  }
+
+  const [i, j] = pairs[pairIndex];
+  const removeIndex = which === "A" ? i : j;
+
+  // Mark this item as removed
+  if (items[removeIndex]) {
+    items[removeIndex].removed = true;
+  }
+
+  updateItemsCountLabel();
   updateProgress();
   updateRanking();
   showCurrentPair();
@@ -235,12 +324,21 @@ function choose(choice) {
 /* ---------- PROGRESS & RANKING ---------- */
 
 function updateProgress() {
-  const total = pairs.length;
-  const done = Math.min(pairIndex, total);
   const progressLabel = document.getElementById("progressLabel");
   const progressBar = document.getElementById("progressBar");
-
   if (!progressLabel || !progressBar) return;
+
+  const activeSet = new Set(activeItems().map((it) => it.id));
+
+  let total = 0;
+  let done = 0;
+
+  for (let idx = 0; idx < pairs.length; idx++) {
+    const [i, j] = pairs[idx];
+    if (!activeSet.has(i) || !activeSet.has(j)) continue;
+    total++;
+    if (idx < pairIndex) done++;
+  }
 
   if (total === 0) {
     progressLabel.textContent = "";
@@ -259,7 +357,14 @@ function updateRanking() {
   const container = document.getElementById("rankingContainer");
   if (!container) return;
 
-  const sorted = [...items].sort(
+  const active = activeItems();
+  if (!active.length) {
+    container.classList.add("empty-state");
+    container.textContent = "No options left.";
+    return;
+  }
+
+  const sorted = [...active].sort(
     (a, b) => b.wins - a.wins || a.name.localeCompare(b.name)
   );
 
