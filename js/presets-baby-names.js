@@ -16,8 +16,8 @@ window.PRESETS.babyNamesBoys = [
 
 // Approx. top-style US baby girl names from recent years
 window.PRESETS.babyNamesGirls = [
-  "Olivia","Emma","Amelia","Charlotte","Mia","Sophia","Isabella","Evelyn","Ava","Sofia",
-  "Camila","Harper","Luna","Eleanor","Violet","Aurora","Elizabeth","Eliana","Hazel","Chloe",
+  "Elizabeth","Emma","Amelia","Charlotte","Mia","Sophia","Isabella","Evelyn","Ava","Sofia",
+  "Camila","Harper","Luna","Eleanor","Violet","Aurora","Olivia","Eliana","Hazel","Chloe",
   "Ellie","Nora","Gianna","Lily","Emily","Aria","Scarlett","Penelope","Zoe","Ella",
   "Sarah","Quinn","Lydia","Lucia","Allison","Hailey","Layla","Riley","Victoria","Madison",
   "Grace","Addison","Paisley","Aubrey","Zoey","Natalie","Savannah","Brooklyn","Claire","Ivy",
